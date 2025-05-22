@@ -1,13 +1,27 @@
-
 services:
   api:
-    build: .
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     container_name: finance-api
     ports:
       - "3000:3000"
-    env_file: .env
+    env_file:
+      - .env
+    volumes:
+      - ./.env:/app/.env
     depends_on:
       - db
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: finance-frontend
+    ports:
+      - "5173:80" # 5173 externo → 80 nginx
+    depends_on:
+      - api
 
   db:
     image: postgres:15
